@@ -1,0 +1,26 @@
+# ----------{Cling Dockerfile}----------#
+
+FROM ubuntu:latest
+MAINTAINER Andres Mariscal "carlos.mariscal.melgar@gmail.com"
+
+# ----{install llvm clang and cling}----#
+
+RUN apt-get update
+RUN apt-get install python3 -y
+RUN apt-get install python -y
+RUN apt-get install apt-utils -y
+RUN apt-get install build-essential -y
+RUN apt-get install cmake -y
+RUN apt-get install g++ -y
+RUN apt-get install git -y
+RUN git clone https://github.com/karies/cling-all-in-one.git
+# RUN git clone https://github.com/maddouri/cling-ubuntu-docker.git
+# RUN /bin/bash -c "source cling-ubuntu-docker/build-cling.sh"
+RUN /bin/bash -c "source /cling-all-in-one/clone.sh"
+
+ENV         CLING_DIR="/inst/bin"                    \
+                CLING="/inst/bin/cling"          \
+    CLING_COMMIT_SHA1="/inst/bin/CLING_COMMIT_SHA1"  \
+                 PATH="$PATH:/inst/bin"
+
+ENTRYPOINT "/inst/bin/cling"
