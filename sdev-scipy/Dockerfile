@@ -55,6 +55,17 @@ RUN make
 RUN make install
 RUN pip3 install confluent-kafka
 RUN pip3 install pykafka
+RUN pip3 install --upgrade setuptools
+RUN pip3 install --upgrade pip
+RUN pip3 install fastavro
+RUN pip3 install pykafka
+RUN pip3 install sqlalchemy
+RUN pip3 install confluent-kafka
+RUN pip3 install gevent
+RUN pip3 install requests --upgrade
+RUN apt-get install screen
+RUN apt-get install vim -y
+RUN apt-get update
 
 
 
