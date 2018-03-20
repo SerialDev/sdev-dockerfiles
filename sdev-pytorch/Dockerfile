@@ -1,5 +1,40 @@
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 
+RUN apt-get update && apt-get -y upgrade
+
+RUN apt-get install git -y
+RUN apt-get install silversearcher-ag -y
+RUN apt-get install curl -y
+
+# common packages
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+    ca-certificates curl file \
+    build-essential \
+    autoconf automake autotools-dev libtool xutils-dev && \
+    rm -rf /var/lib/apt/lists/* 
+
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 \
+    git mercurial subversion
+
+
+RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+    wget --quiet https://repo.continuum.io/archive/Anaconda3-5.1.0-Linux-x86_64.sh -O ~/anaconda.sh && \
+    /bin/bash ~/anaconda.sh -b -p /opt/conda && \
+    rm ~/anaconda.sh
+
+
+RUN apt-get install -y curl grep sed dpkg && \
+    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
+    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
+    dpkg -i tini.deb && \
+    rm tini.deb && \
+    apt-get clean
+
+ENV PATH /opt/conda/bin:$PATH
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
          build-essential \
          cmake \
@@ -12,24 +47,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
      rm -rf /var/lib/apt/lists/*
 
 
-RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
-     chmod +x ~/miniconda.sh && \
-     ~/miniconda.sh -b -p /opt/conda && \     
-     rm ~/miniconda.sh && \
-     /opt/conda/bin/conda install numpy pyyaml scipy ipython mkl && \
-     /opt/conda/bin/conda install -c soumith magma-cuda90 && \
-     /opt/conda/bin/conda clean -ya 
+RUN  conda install numpy pyyaml scipy ipython mkl && \
+     conda install -c soumith magma-cuda90 && \
+     conda clean -ya 
 ENV PATH /opt/conda/bin:$PATH
-# This must be done before pip so that requirements.txt is available
-WORKDIR /opt/pytorch
-COPY . .
-
-RUN git submodule update --init
-RUN TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
-    CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
-    pip install -v .
-
-RUN git clone https://github.com/pytorch/vision.git && cd vision && pip install -v .
 
 WORKDIR /workspace
 RUN chmod -R a+w /workspace
