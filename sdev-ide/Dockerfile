@@ -1,14 +1,14 @@
-FROM ubuntu:latest
+FROM phusion/baseimage:latest
 
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update && apt-get -y upgrade && \
+    apt-get install software-properties-common -y && \
+    apt-get install git -y && \
+    apt-get install silversearcher-ag -y && \
+    apt-get install curl -y
 
-RUN apt-get update
-RUN apt-get install software-properties-common -y
-RUN add-apt-repository ppa:ubuntu-elisp/ppa -y
-RUN apt-get update &&  apt-get install emacs-snapshot -y
-RUN apt-get install git -y
-RUN apt-get install silversearcher-ag -y
-RUN apt-get install curl -y
+RUN add-apt-repository ppa:ubuntu-elisp/ppa -y && \
+    apt-get update && \
+    apt-get install emacs-snapshot -y
 
 # common packages
 RUN apt-get update && \
@@ -33,18 +33,18 @@ RUN bash install-rust.sh
 RUN rustup component add rust-src
 RUN cargo install racer
 
-RUN apt-get update && apt-get install opam -y
-RUN opam init
-RUN opam install utop -y
-RUN opam install tuareg -y
-RUN opam install merlin -y
-RUN opam user-setup install 
+RUN apt-get update && apt-get install opam -y && \
+    opam init && \
+    opam install utop -y && \
+    opam install tuareg -y && \
+    opam install merlin -y && \
+    opam user-setup install  
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-RUN apt-get install nodejs -y
-RUN npm install -g bs-platform
-RUN npm install npm --global
-RUN apt-get update && apt-get install firefox -y
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    apt-get install nodejs -y && \
+    npm install -g bs-platform && \
+    npm install npm --global && \
+    apt-get update && apt-get install firefox -y
 
 RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
@@ -65,17 +65,26 @@ RUN apt-get install -y curl grep sed dpkg && \
 
 ENV PATH /opt/conda/bin:$PATH
 
+RUN git clone https://github.com/Andersbakken/rtags.git # Recursive
 
-# RUN npm install -g https://github.com/reasonml/reason-cli/archive/beta-v-1.13.7-bin-linux.tar.gz
 
-# ADD ./ mnt/NewEmacs
+RUN apt-get install ninja -y && \
+    apt-get install libclang-dev -y && \
+    apt-get install clang -y && \
+    apt-get install cmake -y && \
+    cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make
 
-# RUN cp /mnt/NewEmacs/PragmataPro.ttf /usr/local/share/fonts
+RUN conda update -n base conda && \
+    conda install pytorch -c pytorch \
+    conda install virtualenv \
+    conda install torchvision \
+    conda install jupyter \
+    conda install pip
 
-# RUN echo "export DISPLAY=172.22.215.129:0" >> /mnt/NewEmacs/sdev-emacs.sh
+RUN pip install meson
 
-# RUN echo "emacs -q -l /mnt/NewEmacs/sdev-emacs.el &" >> /mnt/NewEmacs/sdev-emacs.sh
+RUN git clone --recursive https://github.com/Andersbakken/rtags.git && \
+    cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make && \
+    export PATH=$PATH:/mnt/rtags/bin
 
-# curl https://sh.rustup.rs -sSf | sh
-# docker build ./ -t sdev-emacs
-# docker run -v //C/Users/andre/Desktop/SerialDev:/mnt/working_dir --net="host" -it sdev-emacs
+# # docker run -v //C/Users/andre/Desktop/SerialDev:/mnt/working_dir --net="host" -it sdev-emacs
