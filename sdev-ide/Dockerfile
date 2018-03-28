@@ -65,26 +65,37 @@ RUN apt-get install -y curl grep sed dpkg && \
 
 ENV PATH /opt/conda/bin:$PATH
 
-RUN git clone https://github.com/Andersbakken/rtags.git # Recursive
+RUN conda update -n base conda && \
+    conda install pytorch -c pytorch && \
+    conda install virtualenv && \
+    conda install torchvision && \
+    conda install jupyter && \
+    conda install pip
+
+RUN pip install --upgrade pip && \
+    pip install meson
+
+
+#---{Latest clang}--#
+
+# RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key |  apt-key add - && \
+#     apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main" && \
+#     apt-get update && \
+#     apt-get install -y clang-5.0
+
+
+RUN git clone --recursive https://github.com/Andersbakken/rtags.git # Recursive
 
 
 RUN apt-get install ninja -y && \
     apt-get install libclang-dev -y && \
     apt-get install clang -y && \
-    apt-get install cmake -y && \
-    cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make
+    apt-get install cmake -y  && \
+    apt-get install libssl-dev pkg-config -y
 
-RUN conda update -n base conda && \
-    conda install pytorch -c pytorch \
-    conda install virtualenv \
-    conda install torchvision \
-    conda install jupyter \
-    conda install pip
 
-RUN pip install meson
+RUN cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make
 
-RUN git clone --recursive https://github.com/Andersbakken/rtags.git && \
-    cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make && \
-    export PATH=$PATH:/mnt/rtags/bin
+ENV PATH=$PATH:/rtags/bin
 
 # # docker run -v //C/Users/andre/Desktop/SerialDev:/mnt/working_dir --net="host" -it sdev-emacs
