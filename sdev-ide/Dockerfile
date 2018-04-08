@@ -1,4 +1,5 @@
-FROM phusion/baseimage:latest
+# FROM phusion/baseimage:latest
+FROM ubuntu:xenial
 
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install software-properties-common -y && \
@@ -65,26 +66,38 @@ RUN apt-get install -y curl grep sed dpkg && \
 
 ENV PATH /opt/conda/bin:$PATH
 
-RUN git clone https://github.com/Andersbakken/rtags.git # Recursive
-
+RUN conda update -n base conda && \
+    conda install pytorch -c pytorch && \
+    conda install virtualenv
+    
+RUN conda install torchvision && \
+    conda install jupyter &&  \
+    conda install pip
 
 RUN apt-get install ninja -y && \
     apt-get install libclang-dev -y && \
+    apt-get install pkg-config -y && \
     apt-get install clang -y && \
-    apt-get install cmake -y && \
-    cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make
-
-RUN conda update -n base conda && \
-    conda install pytorch -c pytorch \
-    conda install virtualenv \
-    conda install torchvision \
-    conda install jupyter \
-    conda install pip
+    apt-get install cmake -y
 
 RUN pip install meson
 
 RUN git clone --recursive https://github.com/Andersbakken/rtags.git && \
     cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make && \
     export PATH=$PATH:/mnt/rtags/bin
+
+RUN apt-get update && apt-get install -y \
+    automake \
+    build-essential \
+    curl \
+    libgif-dev \
+    libgnutls-dev \
+    libgtk-3-dev \
+    libjpeg-dev \
+    libncurses5-dev \
+    libtiff-dev \
+    libxml2-dev \
+    libxpm-dev \
+    texinfo
 
 # # docker run -v //C/Users/andre/Desktop/SerialDev:/mnt/working_dir --net="host" -it sdev-emacs
