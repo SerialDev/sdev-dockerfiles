@@ -51,6 +51,29 @@ RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificate
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git mercurial subversion
 
+RUN apt-get install ninja -y && \
+    apt-get install libclang-dev -y && \
+    apt-get install pkg-config -y && \
+    apt-get install clang -y && \
+    apt-get install cmake -y
+
+
+RUN apt-get update && apt-get install -y \
+    automake \
+    build-essential \
+    curl \
+    libgif-dev \
+    libgnutls-dev \
+    libgtk-3-dev \
+    libjpeg-dev \
+    libncurses5-dev \
+    libtiff-dev \
+    libxml2-dev \
+    libxpm-dev \
+    texinfo
+
+    
+    
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/archive/Anaconda3-5.1.0-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p /opt/conda && \
@@ -74,11 +97,6 @@ RUN conda install torchvision && \
     conda install jupyter &&  \
     conda install pip
 
-RUN apt-get install ninja -y && \
-    apt-get install libclang-dev -y && \
-    apt-get install pkg-config -y && \
-    apt-get install clang -y && \
-    apt-get install cmake -y
 
 RUN pip install meson
 
@@ -86,18 +104,18 @@ RUN git clone --recursive https://github.com/Andersbakken/rtags.git && \
     cd rtags && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . && make && \
     export PATH=$PATH:/mnt/rtags/bin
 
-RUN apt-get update && apt-get install -y \
-    automake \
-    build-essential \
-    curl \
-    libgif-dev \
-    libgnutls-dev \
-    libgtk-3-dev \
-    libjpeg-dev \
-    libncurses5-dev \
-    libtiff-dev \
-    libxml2-dev \
-    libxpm-dev \
-    texinfo
+ENV PATH "/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    
+
+RUN git clone --recursive https://github.com/Wilfred/remacs.git 
+    
+#https://debbugs.gnu.org/cgi/bugreport.cgi?bug=23529
+
+
+# RUN cd /remacs && rustup install `cat rust-toolchain` && \
+#     ./autogen.sh && ./configure --enable-rust-debug && setarch $(uname -m) -R make
 
 # # docker run -v //C/Users/andre/Desktop/SerialDev:/mnt/working_dir --net="host" -it sdev-emacs
+## docker run --rm -it --security-opt seccomp=unconfined sdev-ide
+
+
