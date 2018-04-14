@@ -1,16 +1,6 @@
 # FROM phusion/baseimage:latest
 FROM ubuntu:xenial
 
-RUN apt-get update && apt-get -y upgrade && \
-    apt-get install software-properties-common -y && \
-    apt-get install git -y && \
-    apt-get install silversearcher-ag -y && \
-    apt-get install curl -y
-
-RUN add-apt-repository ppa:ubuntu-elisp/ppa -y && \
-    apt-get update && \
-    apt-get install emacs-snapshot -y
-
 # common packages
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -18,6 +8,16 @@ RUN apt-get update && \
     build-essential \
     autoconf automake autotools-dev libtool xutils-dev && \
     rm -rf /var/lib/apt/lists/* 
+
+RUN apt-get update && apt-get -y upgrade && \
+    apt-get install software-properties-common -y && \
+    apt-get install git -y && \
+    apt-get install silversearcher-ag -y && \
+    apt-get install curl -y && \
+    add-apt-repository ppa:ubuntu-elisp/ppa -y && \
+    apt-get update && \
+    apt-get install emacs-snapshot -y
+
 
 # install rustup toolchain
 RUN curl https://sh.rustup.rs -sSf | \
@@ -99,5 +99,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libxpm-dev \
     texinfo
+
+#                                         Install leiningen                                         #
+
+
+RUN apt-get install default-jdk -y &&\
+    wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein && \
+    chmod +x lein && mv lein /usr/local/bin && lein -v
 
 # # docker run -v //C/Users/andre/Desktop/SerialDev:/mnt/working_dir --net="host" -it sdev-emacs
