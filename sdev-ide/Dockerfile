@@ -98,6 +98,22 @@ RUN echo "(curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nigh
     rustup component add rust-src && \
     cargo install racer
 
+# Install SBCL from the tarball binaries.
+RUN wget http://prdownloads.sourceforge.net/sbcl/sbcl-1.2.9-x86-64-linux-binary.tar.bz2 -O /tmp/sbcl.tar.bz2 && \
+    mkdir /tmp/sbcl && \
+    tar jxvf /tmp/sbcl.tar.bz2 --strip-components=1 -C /tmp/sbcl/ && \
+    cd /tmp/sbcl && \
+    sh install.sh && \
+    cd /tmp \
+    rm -rf /tmp/sbcl/
+
+WORKDIR /tmp/
+RUN wget http://beta.quicklisp.org/quicklisp.lisp && \
+    echo "(defvar *dist-url* \"http://beta.quicklisp.org/dist/quicklisp/2015-12-18/distinfo.txt\") \n (load \"quicklisp.lisp\") \n (quicklisp-quickstart:install :path \"/root/quicklisp/\" :dist-url *dist-url*) \n (with-open-file (out \"/root/.sbclrc\" :direction :output) \n (format out \"(load \\"/root/quicklisp\/setup.lisp\\")\"))    (ql:quickload \"quicklisp-slime-helper\")" > /tmp/install.lisp && \
+     sbcl --non-interactive --load install.lisp
+
+WORKDIR /root
+
 
 # RUN git clone --recursive https://github.com/Wilfred/remacs.git 
     
