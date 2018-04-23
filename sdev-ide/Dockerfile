@@ -1,4 +1,4 @@
-FROM phusion/baseimage:latest
+FROM ubuntu:xenial
 
 # common packages
 RUN apt-get update && \
@@ -49,11 +49,19 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     apt-get install nodejs -y && \
     npm install -g bs-platform && \
     npm install npm --global && \
-    apt-get update && apt-get install firefox -y
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg |  apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && apt-get install yarn
+
 
 RUN apt-get install default-jdk -y &&\
     wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein && \
-    chmod +x lein && mv lein /usr/local/bin && lein -v
+    chmod +x lein && mv lein /usr/local/bin && lein -v && \
+    apt-get install maven -y && \
+    git clone https://github.com/jdee-emacs/jdee-server.git && \
+    cd jdee-server && \
+    mvn -Dmaven.test.skip=true package
+    
 
 
 RUN apt-get install -y curl grep sed dpkg && \
@@ -112,6 +120,13 @@ RUN cd /tmp/  && \
     echo "(defvar *dist-url* \"http://beta.quicklisp.org/dist/quicklisp/2015-12-18/distinfo.txt\") \n (load \"quicklisp.lisp\") \n (quicklisp-quickstart:install :path \"/root/quicklisp/\" :dist-url *dist-url*) \n (with-open-file (out \"/root/.sbclrc\" :direction :output) \n (format out \"(load \\"/root/quicklisp\/setup.lisp\\")\"))    (ql:quickload \"quicklisp-slime-helper\")" > /tmp/install.lisp && \
     sbcl --non-interactive --load install.lisp
 
+
+#---------------------------------------------------------------------------------------------------#
+#                                          Important tools                                          #
+#---------------------------------------------------------------------------------------------------#
+
+RUN apt-get install firefox -y && \
+    apt-get install silversearcher-ag
 
 
 # RUN git clone --recursive https://github.com/Wilfred/remacs.git 
