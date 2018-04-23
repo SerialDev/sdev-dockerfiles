@@ -126,7 +126,14 @@ RUN cd /tmp/  && \
 #---------------------------------------------------------------------------------------------------#
 
 RUN apt-get install firefox -y && \
-    apt-get install silversearcher-ag
+    apt-get install silversearcher-ag -y && \
+    git clone https://github.com/domtronn/all-the-icons.el.git && \
+    cp /all-the-icons.el/fonts/all-the-icons.ttf /usr/local/share/fonts && \ 
+    cp /all-the-icons.el/fonts/file-icons.ttf /usr/local/share/fonts && \ 	
+    cp /all-the-icons.el/fonts/fontawesome.ttf /usr/local/share/fonts && \ 
+    cp /all-the-icons.el/fonts/material-design-icons.ttf /usr/local/share/fonts && \ 
+    cp /all-the-icons.el/fonts/octicons.ttf /usr/local/share/fonts && \ 
+    cp /all-the-icons.el/fonts/weathericons.ttf /usr/local/share/fonts
 
 
 # RUN git clone --recursive https://github.com/Wilfred/remacs.git 
