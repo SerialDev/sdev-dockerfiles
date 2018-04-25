@@ -8,6 +8,16 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Install python
+          command: |
+            apk add --no-cache \
+              python3 \
+              postgresql-dev=9.6.3-r0 \
+              libxml2-dev \
+              libxslt-dev \
+              libjpeg-turbo-dev \
+              python3-dev 
+      - run:
           name: Install dependencies
           command: |
             apk add --no-cache \
@@ -15,26 +25,6 @@ jobs:
             pip install \
               docker-compose==1.12.0 \
               awscli==1.11.76 \
-               apk add --no-cache \
-               curl \
-               freetype \
-               git \
-               lcms2 \
-               libjpeg-turbo \
-               libwebp \
-               openjpeg \
-               openssl \
-               p7zip \
-               py3-lxml \
-               python3 \
-               tar \
-               tiff \
-               unrar \
-               unzip \
-               vnstat \
-               wget \
-               xz \
-               zlib
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
