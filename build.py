@@ -64,7 +64,7 @@ DOCKERHUB = "serialdev/"
 for name, dirs, files in walklevel(os.getcwd(), 1):
     if files == []:
 	    continue
-    if files[0] == 'Dockerfile':
+    if 'Dockerfile' in files:
         dockerfile_name = name.split(os.sep)[-1]
         dockerfile_hash_dict = load_or_create("dockerfile-hash/dockerfile_hash.plk")
         dockerfile = load_file(os.path.join(name, 'Dockerfile'))
