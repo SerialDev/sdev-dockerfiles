@@ -12,12 +12,10 @@ jobs:
           command: |
             apk add --no-cache \
               python3 \
-              postgresql-dev=9.6.3-r0 \
               libxml2-dev \
               libxslt-dev \
               libjpeg-turbo-dev \
-              python3-dev \
-              postgresql
+              python3-dev 
       - run:
           name: Install dependencies
           command: |
