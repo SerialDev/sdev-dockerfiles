@@ -48,6 +48,13 @@ def load_or_create(path, flag='rb'):
 
     return result
 
+def print_exec(proc):
+    try:
+        for line in iter(proc.stdout.readline,''):
+            print(line.rstrip())
+    except:
+        print(proc.decode().rstrip())
+
 def to_pickle(data, path, flag='wb'):
     with open(path, flag) as f:
         pickle.dump(data, f)
@@ -67,14 +74,16 @@ for name, dirs, files in walklevel(os.getcwd(), 1):
                 continue
         except:
             pass
-        dockerfile_hash_dict[dockerfile_name] = dockerfile_hash
-        to_pickle(dockerfile_hash_dict, "dockerfile-hash/dockerfile_hash.plk")
 
         build = execute('docker build ./ -t {}'.format(dockerfile_name), name)
+        print_exec(build)
+        
         tag = execute('docker tag {} {}'.format(dockerfile_name,
                                                 DOCKERHUB + dockerfile_name), name)
+        print_exec(tag)
+        
         deploy = execute('docker push {}'.format(DOCKERHUB + dockerfile_name), name)
+        print_exec(deploy)
 
-        print(build)
-        print(tag)
-        print(deploy)
+        dockerfile_hash_dict[dockerfile_name] = dockerfile_hash
+        to_pickle(dockerfile_hash_dict, "dockerfile-hash/dockerfile_hash.plk")
