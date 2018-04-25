@@ -64,7 +64,7 @@ for name, dirs, files in walklevel(os.getcwd(), 1):
         dockerfile_hash = sha512(dockerfile).hexdigest()
         try:
             if dockerfile_hash == dockerfile_hash_dict[dockerfile_name]:
-                pass
+                continue
         except:
             pass
         dockerfile_hash_dict[dockerfile_name] = dockerfile_hash
