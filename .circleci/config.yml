@@ -34,7 +34,7 @@ jobs:
                vnstat \
                wget \
                xz \
-               zlib && \
+               zlib
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
