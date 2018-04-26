@@ -34,7 +34,7 @@ jobs:
       #     command: "python3 build.py" 
       - run:
           name: Test docker image validity
-          command: "chmod 777 ./test.sh && \
+          command: "chmod 777 ./test.sh \
           ./test.sh" 
       # - run:
       #     name: Build application Docker image
