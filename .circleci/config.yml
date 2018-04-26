@@ -29,9 +29,12 @@ jobs:
             - v1-{{ .Branch }}
           paths:
             - /caches/app.tar
+      # - run:
+      #     name: Push application Docker image
+      #     command: "python3 build.py" 
       - run:
-          name: Push application Docker image
-          command: "python3 build.py" 
+          name: Test docker image validity
+          command: "./test.sh" 
       # - run:
       #     name: Build application Docker image
       #     command: |
