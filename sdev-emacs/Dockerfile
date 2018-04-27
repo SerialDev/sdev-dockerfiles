@@ -38,5 +38,5 @@ RUN apt-get update && \
     apt-get install cmake -y
 
 
-RUN curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python && \
-    export PATH="/root/.cask/bin:$PATH"
+RUN curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python 
+ENV PATH /root/.cask/bin:$PATH
