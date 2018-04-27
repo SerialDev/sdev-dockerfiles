@@ -39,4 +39,4 @@ RUN apt-get update && \
 
 
 RUN curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python && \
-    export PATH="/home/travis/.cask/bin:$PATH"
+    export PATH="/root/.cask/bin:$PATH"
