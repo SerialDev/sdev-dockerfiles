@@ -98,6 +98,25 @@ RUN apt-get install firefox -y && \
     cp /all-the-icons.el/fonts/weathericons.ttf /usr/local/share/fonts
 
 
+
+RUN apt-get install -y openssh-server && \
+    mkdir /var/run/sshd && \
+    echo 'root:root' |chpasswd && \
+    sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config & \
+    sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config & \
+    mkdir /root/.ssh
+
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python 
+ENV PATH /root/.cask/bin:$PATH
+
+EXPOSE 22
+
+CMD    ["/usr/sbin/sshd", "-D"]
+
+
 # RUN git clone --recursive https://github.com/Wilfred/remacs.git 
     
 #https://debbugs.gnu.org/cgi/bugreport.cgi?bug=23529
