@@ -7,13 +7,14 @@ RUN apt-get update && apt-get install opam -y && \
     opam install merlin -y && \
     opam user-setup install  
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-    apt-get install nodejs -y && \
-    npm install -g bs-platform && \
-    npm install npm --global && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg |  apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get update && apt-get install yarn
+
+# RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+#     apt-get install nodejs -y && \
+#     npm install -g bs-platform && \
+#     npm install npm --global && \
+#     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg |  apt-key add - && \
+#     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+#     apt-get update && apt-get install yarn
 
 
 RUN apt-get install default-jdk -y &&\
@@ -102,6 +103,9 @@ RUN curl -L https://github.com/roswell/roswell/releases/download/v19.08.10.101/r
 
 ENV PATH=$PATH:~/.roswell/bin
 
+
+RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash - && \
+	apt-get -y install nodejs && npm install
 	
 	
 EXPOSE 22
