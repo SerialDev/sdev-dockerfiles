@@ -1,8 +1,10 @@
-FROM       ubuntu:xenial
+FROM       ubuntu:eoan
 
 MAINTAINER Andres Mariscal "https://github.com/serialdev"
 
 RUN apt-get update
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # common packages
 RUN apt-get update && \
@@ -27,7 +29,6 @@ RUN apt-get update && \
     build-essential \
     curl \
     libgif-dev \
-    libgnutls-dev \
     libgtk-3-dev \
     libjpeg-dev \
     libncurses5-dev \
@@ -35,7 +36,6 @@ RUN apt-get update && \
     libxml2-dev \
     libxpm-dev \
     texinfo && \
-    apt-get install ninja -y && \
     apt-get install libclang-dev -y && \
     apt-get install pkg-config -y && \
     apt-get install clang -y && \
